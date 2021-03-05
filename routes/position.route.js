@@ -10,8 +10,20 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   positionController.getByCategoryId
 );
-router.post("/", positionController.create);
-router.patch("/:id", positionController.update);
-router.delete("/:id", positionController.remove);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  positionController.create
+);
+router.patch(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  positionController.update
+);
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  positionController.remove
+);
 
 module.exports = router;

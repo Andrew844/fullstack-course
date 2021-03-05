@@ -1,14 +1,13 @@
-const multiparty = require("multiparty");
-
 const Category = require("../models/Category.model");
 const Position = require("../models/Position.model");
 const { errorHandler } = require("../utils/errorHandler.util");
 
 module.exports.getAll = function (req, res) {
   try {
-    Category.find({ user: req.user.id }).then(
+    console.log(req.user._id === "603cdae1980af8231c7e4020");
+    Category.find({ user: req.user._id }).then(
       (categories) => {
-        res.status(200).json(categories);
+        res.status(200).json({ categories });
       },
       (e) => errorHandler(res, e)
     );
@@ -50,28 +49,18 @@ module.exports.remove = function (req, res) {
   }
 };
 
-module.exports.create = async function (req, res) {
+module.exports.create = function (req, res) {
   try {
-    const form = new multiparty.Form({ uploadDir: "../uploads" });
-
-    console.log("req.files: ", req.files);
-    console.log("req.file: ", req.file);
-
-    const category = new Category({
-      name: "test",
-      user: req.user.id,
-      imageSrc: req.files ? req.files.files.path : "",
-    });
-
-    // form.parse(req, (err, fields, files) => {
-    //   console.log("files: ", files);
-    //   console.log("err: ", err);
-    //   console.log("fields: ", fields);
-    // });
-
-    await category.save();
-
-    res.status(201).json(category);
+    new Category({
+      name: req.body.name,
+      user: req.user._id,
+      imageSrc: req.file ? req.file.path : "",
+    })
+      .save()
+      .then((category) => {
+        res.status(201).json(category);
+      })
+      .catch((e) => errorHandler(res, e));
   } catch (e) {
     errorHandler(res, e);
   }
@@ -79,6 +68,24 @@ module.exports.create = async function (req, res) {
 
 module.exports.update = function (req, res) {
   try {
+    const updated = {
+      name: req.body.name,
+    };
+
+    if (req.file) {
+      updated.imageSrc = req.file.path;
+    }
+
+    Category.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: updated },
+      { new: true }
+    ).then(
+      (category) => {
+        res.status(200).json(category);
+      },
+      (e) => errorHandler(res, e)
+    );
   } catch (e) {
     errorHandler(res, e);
   }

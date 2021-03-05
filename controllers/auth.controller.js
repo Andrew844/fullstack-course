@@ -10,7 +10,7 @@ module.exports.login = function (req, res) {
     (candidate) => {
       if (!candidate) {
         return res.status(409).json({
-          message: "Неверный email или пароль.",
+          message: "Пользователя с таким email не существует.",
         });
       }
 

@@ -1,0 +1,30 @@
+<form class="card" (ngSubmit)="onSubmit()" [formGroup]="form">
+  <div class="card-content">
+    <span class="card-title">Создать аккаунт</span>
+    <div class="input-field">
+      <input id="email" type="email" formControlName="email">
+      <label for="email">Email:</label>
+      <span *ngIf="form.get('email').invalid && form.get('email').touched"
+            class="helper-text red-text">
+        <span *ngIf="form.get('email').errors['required']">Email не должен быть пустым</span>
+        <span *ngIf="form.get('email').errors['email']">Введите корректный email</span>
+      </span>
+
+    </div>
+    <div class="input-field">
+      <input id="password" type="password" formControlName="password">
+      <label for="password">Пароль:</label>
+      <span *ngIf="form.get('password').invalid && form.get('password').touched"
+            class="helper-text red-text">
+        <span *ngIf="form.get('password').errors['required']">Пароль не должен быть пустым</span>
+        <span *ngIf="form.get('password').errors['minlength']">Длина пароля должна быть
+          {{form.get('password').errors['minlength']['requiredLength']}} символов,
+          текущая длина: {{form.get('password').errors['minlength']['actualLength']}}
+        </span>
+      </span>
+    </div>
+  </div>
+  <div class="card-action">
+    <button class="modal-action btn waves-effect" [disabled]="form.invalid">Создать</button>
+  </div>
+</form>
